@@ -37,13 +37,6 @@ jspm_packages/
 # Test coverage
 coverage/
 
-# Jest and Supertest
-jest-html-reporters-*.json
-coverage/
-*.test.ts
-*.spec.ts
-__tests__/
-__mocks__/
 
 # Miscellaneous
 .DS_Store
