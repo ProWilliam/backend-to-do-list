@@ -1,40 +1,34 @@
-# Todo List Backend con Node.js, Express y TypeScript
+# Todo List Backend with Node.js, Express and TypeScript
 
 
-Este es un backend para una aplicación de gestión de tareas (Todo List), desarrollado con Node.js, Express, TypeScript y MongoDB. Se utiliza JWT para la autenticación de usuarios y asegurar las rutas.
+This is a backend for a task management application (Todo List), developed with Node.js, Express, TypeScript and MongoDB. JWT is used for user authentication and securing routes.
 
-## Requisitos
-Antes de comenzar, asegúrate de tener lo siguiente instalado en tu sistema:
+## Requirements
+Before you begin, make sure you have the following installed on your system:
 
-- Node.js (versión 21.4 o superior)
-- npm o yarn para manejar dependencias
-- MongoDB (ya sea local o mediante un servicio de MongoDB como MongoDB Atlas)
-- Insomnia, Postman o cualquier cliente para realizar pruebas HTTP
+- Node.js (version 21.4 or higher)
+- npm or yarn to manage dependencies
+- MongoDB (either on-premises or through a MongoDB service such as MongoDB Atlas)
+- Insomnia, Postman or any client for HTTP testing
 
-## Instalación
+## Install
 
-1. Clonar el repositorio.
+1. Clone the repository.
 
-```
-git clone https://github.com/tu_usuario/todo-backend.git
-cd todo-backend
-```
 
-2. Instalar dependencias.
-Usa el siguiente comando para instalar las dependencias del proyecto:
-
+2. Install dependencies.
+Use the following command to install the project dependencies:
 ```
 npm install
 ```
 
-o si prefieres yarn: 
-
+or if you prefer yarn:
 ```
 yarn install
 ```
 
-3. Configurar variables de entorno.
-Crea un archivo .env en la raíz del proyecto con la siguiente estructura:
+3. Configure environment variables.
+Create a .env file in the project root with the following structure:
 
 ```
 PORT=5000
@@ -42,32 +36,32 @@ MONGO_URI=mongodb://localhost:27017/todo-db
 JWT_SECRET=tu_secreto_jwt
 ```
 
-PORT: El puerto en el que se ejecutará el servidor.
-MONGO_URI: La URL de tu base de datos MongoDB.
-JWT_SECRET: La clave secreta utilizada para firmar y verificar los tokens JWT.
+PORT: The port on which the server will run.
+MONGO_URI: The URL of your MongoDB database.
+JWT_SECRET: The secret key used to sign and verify JWT tokens.
 
-4. Ejecutar el proyecto
-Usa el siguiente comando para ejecutar el servidor en modo desarrollo:
+4. Run the project
+Use the following command to run the server in development mode:
 
 ```
 npm run dev
 ```
-o con yarn:
 
+or with yarn:
 ```
 yarn dev
 ```
-Esto iniciará el servidor en http://localhost:5000.
+This will start the server at http://localhost:5000.
 
-## Uso de la API
-1. Autenticación
-Para acceder a la mayoría de las rutas de la API, es necesario autenticarse usando JWT. Los pasos son los siguientes:
+## API usage
+1. Authentication
+To access most API routes, you need to authenticate using JWT. The steps are as follows:
 
-2. Obtener un Token JWT
-Puedes implementar una ruta de autenticación para obtener el token, o hacerlo manualmente mientras desarrollas. Usa este token en las cabeceras de las solicitudes que necesiten autenticación.
+2. Get a JWT Token
+You can implement an authentication route to obtain the token, or do it manually while developing. Use this token in the headers of requests that require authentication.
 
-3. Autenticarse usando el token JWT
-Al hacer peticiones a rutas protegidas, debes incluir el token en la cabecera de la solicitud:
+3. Authenticate using the JWT token
+When making requests to protected routes, you must include the token in the request header:
 
 ```
 Authorization: YOUR_JWT_TOKEN
@@ -75,88 +69,88 @@ Authorization: YOUR_JWT_TOKEN
 
 ## Endpoints
 
-A continuación se describen las rutas disponibles:
+The available routes are described below:
 
-Crear una tarea y su cuerpo es en formato json.
+Create a task and its body is in json format.
 ```
 URL: /todo
 Método: POST
-Autenticación: Sí (JWT)
+Autenticación: Yes (JWT)
 {
-  "text": "Descripción de la tarea"
+  "text": "Task description"
 }
 ```
 
-Obtener las tareas del usuario autenticado retorna un array de objetos.
+Getting the authenticated user's tasks returns an array of objects.
 ```
 URL: /todo
 Método: GET
-Autenticación: Sí (JWT)
+Autenticación: Yes (JWT)
 [
   {
-    "_id": "id_de_la_tarea",
-    "text": "Descripción de la tarea",
-    "user": "id_del_usuario",
-    "createdAt": "fecha",
-    "updatedAt": "fecha"
+    "_id": "id_of_the_task",
+    "text": "Task description",
+    "user": "id_of_the_user",
+    "createdAt": "date",
+    "updatedAt": "date"
   }
 ]
 ```
 
-Actualizar una tarea y retorna la actualizacion de la tarea
+Update a task and return the task update
 ```
 URL: /todo/:id
 Método: PUT
-Autenticación: Sí (JWT)
+Autenticación: Yes (JWT)
 {
-  "text": "Descripción actualizada de la tarea"
+  "text": "Updated task description"
 }
 ```
 
-Eliminar una tarea retorna respuesta 204
+Deleting a task returns response 204
 ```
 URL: /todo/:id
 Método: DELETE
-Autenticación: Sí (JWT)
+Autenticación: Yes (JWT)
 ```
 
-# Estructura de Carpetas
-El proyecto sigue la siguiente estructura de carpetas:
+# Folder Structure
+The project follows the following folder structure:
 
 ```
 .
 ├── src
 │   ├── config
-│   │   └── db.ts          # Configuración de la base de datos
+│   │   └── db.ts          # Database configuration
 │   ├── middleware
-│   │   └── auth.ts        # Middleware de autenticación JWT
+│   │   └── auth.ts        # JWT authentication middleware
 │   ├── models
 │   │   ├── todo
-│   │       └── Todo.ts    # Modelo de Tarea (Todo)
+│   │       └── Todo.ts    # Task Model (All)
 |   |   └── user
-│   │       └── User.ts    # Modelo de User
+│   │       └── User.ts    # User Model
 │   ├── routes
 │   │   ├── auth
-│   │   |   └── auth.ts    # Rutas de la API para las autenticarse (Auth)
+│   │   |   └── auth.ts    # API routes for authentication (Auth)
 |   |   └── todo
-│   │       └── todo.ts    # Rutas de la API para las tareas (Todo)
+│   │       └── todo.ts    # API routes for tasks (Todo)
 │   ├── types
 │   │   └── AuthenticatedRequest.d.ts 
-│   └── app.ts             # Configuración del servidor Express
-├── .env                   # Variables de entorno (ignorado por git)
-├── package.json           # Configuración de dependencias
-├── tsconfig.json          # Configuración de TypeScript        
-└── README.md              # Este archivo
+│   └── app.ts             # Express server configuration
+├── .env                   # Environment variables (ignored by git)
+├── package.json           # Dependency configuration
+├── tsconfig.json          # TypeScript Settings      
+└── README.md              # This file
 ```
 
 ## Scripts
 
-Ejecuta el servidor en modo de desarrollo.
+Run the server in development mode.
 ```
 npm run dev    
 ```
 
-Compila el proyecto TypeScript en JavaScript.
+Compiles the TypeScript project to JavaScript.
 ```
 npm run build
 ```
