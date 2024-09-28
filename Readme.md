@@ -1,7 +1,7 @@
-# Todo List Backend with Node.js, Express and TypeScript
+# Todo List Backend with Node.js, Express, TypeScript, WebSockets, and Testing with Jest
 
 
-This is a backend for a task management application (Todo List), developed with Node.js, Express, TypeScript and MongoDB. JWT is used for user authentication and securing routes.
+This is a backend for a task management application (Todo List), developed with Node.js, Express, TypeScript, MongoDB, and WebSockets using socket.io. JWT is used for user authentication and route security, and WebSocket support allows for real-time updates, supporting multiple open windows per user. Testing is done using Jest.
 
 ## Requirements
 Before you begin, make sure you have the following installed on your system:
@@ -10,11 +10,16 @@ Before you begin, make sure you have the following installed on your system:
 - npm or yarn to manage dependencies
 - MongoDB (either on-premises or through a MongoDB service such as MongoDB Atlas)
 - Insomnia, Postman or any client for HTTP testing
+- WebSocket-compatible client or frontend using socket.io-client for real-time features
+- Jest for running unit and integration tests
 
 ## Install
 
 1. Clone the repository.
 
+```
+git clone https://github.com/ProWilliam/backend-to-do-list.git
+```
 
 2. Install dependencies.
 Use the following command to install the project dependencies:
@@ -32,12 +37,12 @@ Create a .env file in the project root with the following structure:
 
 ```
 PORT=5000
-MONGO_URI=mongodb://localhost:27017/todo-db
+MONGO_URI=mongodb://localhost:27017/todo-db || mongodb+srv://<your_user>:<your_password>@<your_path_cluster>/?retryWrites=true&w=majority&appName=heroku
 JWT_SECRET=tu_secreto_jwt
 ```
 
 PORT: The port on which the server will run.
-MONGO_URI: The URL of your MongoDB database.
+MONGO_URI: The URL of your MongoDB database in local or remote.
 JWT_SECRET: The secret key used to sign and verify JWT tokens.
 
 4. Run the project
@@ -52,6 +57,36 @@ or with yarn:
 yarn dev
 ```
 This will start the server at http://localhost:5000.
+
+## WebSocket Integration with socket.io
+The backend now supports WebSocket connections using socket.io to handle real-time features such as broadcasting task updates across multiple windows.
+
+1. WebSocket Client Connection Example
+Using socket.io-client, you can connect to the WebSocket server like this:
+
+```
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:5000', {
+  query: { token: 'your_jwt_token' },
+  transports: ['websocket']
+});
+
+socket.on('connect', () => {
+  console.log('Connected to WebSocket server');
+});
+
+socket.on('message', (message) => {
+  console.log('Received message:', message);
+});
+
+socket.on('disconnect', () => {
+  console.log('Disconnected from WebSocket server');
+});
+```
+
+## Testing with Jest
+This project includes unit and integration tests using Jest. The tests cover the functionality of the Express API and WebSocket connections.The configurations are located in the **jest.config.ts** file
 
 ## API usage
 1. Authentication
@@ -88,11 +123,11 @@ Método: GET
 Autenticación: Yes (JWT)
 [
   {
-    "_id": "id_of_the_task",
-    "text": "Task description",
-    "user": "id_of_the_user",
-    "createdAt": "date",
-    "updatedAt": "date"
+    "_id": ObjetId("id_of_the_task"),
+    "text":"Task description",
+    "completed": boolean,
+    "user": ObjetId{"id_of_the_user"},
+    "__v": 0
   }
 ]
 ```
@@ -103,7 +138,7 @@ URL: /todo/:id
 Método: PUT
 Autenticación: Yes (JWT)
 {
-  "text": "Updated task description"
+  "completed": boolean
 }
 ```
 
@@ -121,26 +156,33 @@ The project follows the following folder structure:
 .
 ├── src
 │   ├── config
-│   │   └── db.ts          # Database configuration
+│   │   ├── db.test.ts       # test configuration
+│   │   └── db.ts            # Database configuration
 │   ├── middleware
-│   │   └── auth.ts        # JWT authentication middleware
+│   │   ├── auth.test.ts       
+│   │   └── auth.ts          # JWT authentication middleware
 │   ├── models
 │   │   ├── todo
-│   │       └── Todo.ts    # Task Model (All)
+│   │       ├── Todo.test.ts    
+│   │       └── Todo.ts      # Task Model (All)
 |   |   └── user
-│   │       └── User.ts    # User Model
+│   │       ├── User.test.ts      
+│   │       └── User.ts      # User Model
 │   ├── routes
 │   │   ├── auth
-│   │   |   └── auth.ts    # API routes for authentication (Auth)
+│   │   |   └── auth.ts      # API routes for authentication (Auth)
 |   |   └── todo
-│   │       └── todo.ts    # API routes for tasks (Todo)
+│   │       └── todo.ts      # API routes for tasks (Todo)
 │   ├── types
 │   │   └── AuthenticatedRequest.d.ts 
-│   └── app.ts             # Express server configuration
-├── .env                   # Environment variables (ignored by git)
-├── package.json           # Dependency configuration
-├── tsconfig.json          # TypeScript Settings      
-└── README.md              # This file
+│   ├── websocket
+│   │   └── websocket.ts 
+│   └── app.ts               # Express server configuration
+├── .env                     # Environment variables (ignored by git)
+├── Insomnia_2024-09-24      # Test export file for API (insomnia)
+├── package.json             # Dependency configuration
+├── tsconfig.json            # TypeScript Settings      
+└── Readme.md                # This file
 ```
 
 ## Scripts
@@ -153,4 +195,9 @@ npm run dev
 Compiles the TypeScript project to JavaScript.
 ```
 npm run build
+```
+
+Run the Jest test suite.
+```
+npm run test
 ```
